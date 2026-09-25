@@ -9,9 +9,6 @@ PASTA = Path(__file__).parent
 CAMINHO_LIVROS = PASTA / "livros.csv"
 
 import csv
-import os
-
-CAMINHO_LIVROS = os.path.join(os.path.dirname(__file__), "livros.csv")
 
 def ler_livros():
     livros = []
