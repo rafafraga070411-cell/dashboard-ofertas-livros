@@ -9,12 +9,13 @@ PASTA = Path(__file__).parent
 CAMINHO_LIVROS = PASTA / "livros.csv"
 
 import csv
+import os
 
-CAMINHO_LIVROS = "aula01/livros.csv"
+CAMINHO_LIVROS = os.path.join(os.path.dirname(__file__), "livros.csv")
 
 def ler_livros():
     livros = []
-    with open(CAMINHO_LIVROS, enconding="utf-8", newline="") as arquivo:
+    with open(CAMINHO_LIVROS, encoding="utf-8", newline="") as arquivo:
         leitor = csv.DictReader(arquivo)
         for linha in leitor:
             livros.append(linha)
