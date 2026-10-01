@@ -4,6 +4,13 @@
 import streamlit as st
 
 import dados
+def criar_tabela():
+    "One" = "⭐"
+    "Two" = "⭐⭐"
+    "Three" = "⭐⭐⭐"
+    "Four" = "⭐⭐⭐⭐"
+    "Five" = "⭐⭐⭐⭐⭐"
+
 
 def main():
     st.set_page_config(page_title="Dashboard de Livros", page_icon="📚", layout="wide")
@@ -26,7 +33,6 @@ def main():
     col4.caption(mais_caro["titulo"])
 
     st.dataframe(livros)
-
 
 if __name__ == "__main__":
     main()

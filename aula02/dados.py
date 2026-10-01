@@ -50,8 +50,8 @@ def contar_cinco_estrelas(livros):
     contador: int = 0
     for livro in livros:
         nota_limpa: str = livro["nota"].lower().strip()
-        if nota_limpa == "five":
-            contador += 1
+        if nota_limpa == 5 * "⭐":
+            contador += 1    
 
     return contador
 
