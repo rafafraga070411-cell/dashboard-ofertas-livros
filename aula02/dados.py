@@ -1,73 +1,72 @@
-"""Leitura dos arquivos CSV do projeto."""
+"""Leitura e preparação dos dados dos livros.
+"""
 
-import csv
 from pathlib import Path
+import csv
 
-# Pasta onde este arquivo .py está. Assim o programa encontra o CSV
-# mesmo quando é executado a partir de outra pasta (como no Streamlit Cloud).
+
 PASTA = Path(__file__).parent
 CAMINHO_LIVROS = PASTA / "livros.csv"
 
 
-def ler_livros():
-    """Lê o CSV de livros e devolve uma lista de dicionários.
+def converter_preco(texto):
+    """Converte '£51.77' para 51.77."""
+    return float(texto.replace("£", ""))
 
-    Os valores vêm do jeito que estão no arquivo, ou seja, como texto:
-    {"titulo": "Sharp Objects", "preco": "£47.82", "nota": "Four", ...}
-    """
+
+def converter_nota(texto):
+    """Converte a nota escrita em inglês para um número."""
+    if texto == "One":
+        return 1
+    elif texto == "Two":
+        return 2
+    elif texto == "Three":
+        return 3
+    elif texto == "Four":
+        return 4
+    elif texto == "Five":
+        return 5
+    else:
+        return 0
+
+
+def ler_livros(caminho=CAMINHO_LIVROS):
+    """Lê as linhas do arquivo CSV como texto."""
     livros = []
-    try:
-        with open(CAMINHO_LIVROS, "r", encoding="utf-8") as arquivo:
-            leitor = csv.DictReader(arquivo)
-            for linha in leitor:
-                livros.append(linha)
-    except FileNotFoundError:
-        print("O arquivo livros.csv não foi encontrado")
-    except Exception as error:
-        print("Algum erro aconteceu na leitura do arquivo", error)
+
+    with open(caminho, encoding="utf-8", newline="") as arquivo:
+        leitor = csv.DictReader(arquivo)
+
+        for linha in leitor:
+            livros.append(linha)
 
     return livros
 
 
-def calcular_preco_medio(livros):
-    """Soma os preços de todos os livros e divide pelo total.
+def preparar_livros(linhas):
+    """Converte preço e nota e devolve livros prontos para usar."""
+    livros = []
 
-    O preço vem como texto ("£51.77"): removemos o "£" e convertemos com float.
-    """
-    soma: float = 0
-    for livro in livros:
-        preco_original: str = livro["preco"]
-        preco_original_limpo: str = preco_original.replace("£", "")
-        preco_num: float = float(preco_original_limpo)
-        soma += preco_num
+    for linha in linhas:
+        livro = {
+            "titulo": linha["titulo"],
+            "preco": converter_preco(linha["preco"]),
+            "nota": converter_nota(linha["nota"]),
+            "categoria": linha["categoria"],
+            "url": linha["url"],
+        }
 
-    preco_medio: float = soma / len(livros)
-    return preco_medio
+        livros.append(livro)
 
-
-def contar_cinco_estrelas(livros):
-    """Conta quantos livros têm a nota máxima. A nota vem como texto ("Five")."""
-    contador: int = 0
-    for livro in livros:
-        nota_limpa: str = livro["nota"].lower().strip()
-        if nota_limpa == 5 * "⭐":
-            contador += 1    
-
-    return contador
+    return livros
 
 
-def encontrar_mais_caro(livros):
-    """Devolve o livro de maior preço. O preço vem como texto ("£51.77")."""
-    mais_caro = livros[0]
-    for livro in livros:
-        preco = float(livro["preco"].replace("£", ""))
-        preco_mais_caro = float(mais_caro["preco"].replace("£", ""))
-        if preco > preco_mais_caro:
-            mais_caro = livro
-    return mais_caro
+def carregar_livros(caminho=CAMINHO_LIVROS):
+    """Lê o CSV e já devolve os livros convertidos."""
+    linhas = ler_livros(caminho)
+    return preparar_livros(linhas)
 
 
 if __name__ == "__main__":
-    livros = ler_livros()
-    print(f"{len(livros)} livros carregados")
-    print("Primeiro livro:", livros[0])
+    print("Texto do CSV:      ", ler_livros()[0])
+    print("Depois de preparar:", carregar_livros()[0])

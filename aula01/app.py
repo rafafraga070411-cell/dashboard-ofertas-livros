@@ -13,6 +13,7 @@ total = len(livros)
 
 soma = 0
 for livro in livros:
+    print(livro)
     preco = float(livro["preco"].replace("£", ""))
     soma += preco
 preco_medio = soma / total
